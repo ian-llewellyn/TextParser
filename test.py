@@ -72,5 +72,4 @@ class OutputTest(unittest.TestCase):
         parser = tp.TextParser()
         parser.learn(fields)
         parser.op_format('%{pid} %{user} %{time} Some other text')
-        #parser.op_format('%(pid)d %(user)s %(time)s Some other text')
         self.assertEqual(parser.sprintf(data), '1 root 0:06 Some other text')

@@ -1,9 +1,6 @@
 #!/bin/python
 # -*- coding: utf-8 -*-
 
-fields = 'USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\n'
-data   = 'root         1  0.0  0.1  46748  3168 ?        Ss   Mar25   0:06 /usr/lib/systemd/systemd --system --deserialize 14\n'
-
 def iswhitespace(c):
     if c == ' ' or c == '\t':
         return True
@@ -110,6 +107,8 @@ class Line(object):
 if __name__ == '__main__':
     import sys, os
     tp = TextParser()
-    tp.learn(fields)
-    print tp.parse(data)
-    sys.exit(os.EX_OK)
+    tp.learn(sys.stdin.readline())
+    while not sys.stdin.closed:
+        line = sys.stdin.readline()
+        line == '' and sys.exit(os.EX_OK)
+        print tp.parse(sys.stdin.readline())
