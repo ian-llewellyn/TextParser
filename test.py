@@ -45,9 +45,9 @@ class LearningTest(unittest.TestCase):
                           'start', 'time', 'command'],
                          parser.fields())
 
-class DataTest(unittest.TestCase):
+class InputTest(unittest.TestCase):
 
-    def testMatchUp(self):
+    def testDataMatchUp(self):
         parser = tp.TextParser()
         parser.learn(fields)
         self.assertEqual(parser.parse(data),
@@ -62,6 +62,24 @@ class DataTest(unittest.TestCase):
              'start': 'Mar25',
              'time': '0:06',
              'command': '/usr/lib/systemd/systemd --system --deserialize 14'})
+
+    def testInputFormat(self):
+        """127.0.0.1 - - [05/Sep/2015:23:26:01 +0100] "GET /TimeStripe.js/sample.html HTTP/1.1" 200 1224 "-" "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
+127.0.0.1 - - [05/Sep/2015:23:26:01 +0100] "GET /TimeStripe.js/timestripe.css HTTP/1.1" 200 222 "http://127.0.0.1/TimeStripe.js/sample.html" "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
+127.0.0.1 - - [05/Sep/2015:23:26:01 +0100] "GET /TimeStripe.js/timestripe.js HTTP/1.1" 200 2817 "http://127.0.0.1/TimeStripe.js/sample.html" "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
+127.0.0.1 - - [05/Sep/2015:23:26:01 +0100] "GET /favicon.ico HTTP/1.1" 404 209 "http://127.0.0.1/TimeStripe.js/sample.html" "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"
+"""
+        data = '127.0.0.1 - - [05/Sep/2015:23:26:01 +0100] "GET /TimeStripe.js/timestripe.js HTTP/1.1" 200 2817 "http://127.0.0.1/TimeStripe.js/sample.html" "Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36"\n'
+        parser = tp.TextParser()
+        parser.ip_format('%{ip} - - [%{datetime}] "%{request}" %{status} %{bytes} "%{referrer}" "%{useragent}"')
+        self.assertEqual(parser.parse(data), {
+            'ip': '127.0.0.1',
+            'datetime': '05/Sep/2015:23:26:01 +0100',
+            'request': 'GET /TimeStripe.js/timestripe.js HTTP/1.1',
+            'status': 200,
+            'bytes': 2817,
+            'referrer': 'http://127.0.0.1/TimeStripe.js/sample.html',
+            'useragent': 'Mozilla/5.0 (X11; Fedora; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36'})
 
 class OutputTest(unittest.TestCase):
 
