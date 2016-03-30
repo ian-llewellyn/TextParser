@@ -18,7 +18,6 @@ class TextParser(object):
 
     def learn(self, subject):
         subject = subject.rstrip('\n')
-        self.record_construction = []
         field_title = ''
         for c in subject:
             if c.isalnum():
@@ -45,7 +44,7 @@ class TextParser(object):
         data = data.rstrip('\n')
 
         result = {}
-        record_construction = self.record_construction
+        record_construction = list(self.record_construction)
         while True:
             try:
                 component = record_construction.pop(0)
@@ -135,7 +134,6 @@ class TextParser(object):
 
     def ip_format(self, format_string):
         self.ip_format_string = format_string
-        self.record_construction = []
         sep_chars = ''
         in_var = False
         var_name = ''
@@ -205,4 +203,4 @@ if __name__ == '__main__':
     while not sys.stdin.closed:
         line = sys.stdin.readline()
         line == '' and sys.exit(os.EX_OK)
-        print tp.parse(sys.stdin.readline())
+        print tp.parse(line)

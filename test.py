@@ -47,6 +47,12 @@ class LearningTest(unittest.TestCase):
 
 class InputTest(unittest.TestCase):
 
+    def testTwoDataRows(self):
+        parser = tp.TextParser()
+        parser.learn('A B C')
+        self.assertEqual(parser.parse('1 2 3'), {'a': 1, 'b': 2, 'c': 3})
+        self.assertEqual(parser.parse('4 5 6'), {'a': 4, 'b': 5, 'c': 6})
+
     def testDataMatchUp(self):
         parser = tp.TextParser()
         parser.learn(fields)
