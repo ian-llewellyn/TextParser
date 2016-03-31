@@ -198,9 +198,32 @@ class Line(object):
 
 if __name__ == '__main__':
     import sys, os
+
+    ip_format = None
+    op_format = None
+    in_file = sys.stdin
+    args = sys.argv[1:]
+    while len(args) > 0:
+        arg = args.pop(0)
+        if arg == '--format':
+            ip_format = args.pop(0)
+            continue
+        if arg == '--print':
+            op_format = args.pop(0)
+            continue
+        in_file = file(arg, 'r')
+
     tp = TextParser()
-    tp.learn(sys.stdin.readline())
-    while not sys.stdin.closed:
-        line = sys.stdin.readline()
+
+    not ip_format and tp.learn(sys.stdin.readline())
+    ip_format and tp.ip_format(ip_format)
+
+    op_format and tp.op_format(op_format)
+
+    while not in_file.closed:
+        line = in_file.readline()
         line == '' and sys.exit(os.EX_OK)
-        print tp.parse(line)
+        if op_format:
+            print tp.sprintf(line)
+        else:
+            print tp.parse(line)
